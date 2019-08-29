@@ -1,35 +1,91 @@
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
+const has = require("has");
+// const request = require("request");
+const tmi = require("tmi.js");
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
 
-const adapter = new FileSync('db.json');
+const adapter = new FileSync("db.json");
 const db = low(adapter);
 db.defaults({ points: {} }).write();
 
-let points = db.get('points').value();
-console.log(points);
+let points = db.get("points").value();
+let users = [];
+const channel = "loneicywolf";
 
-const TwitchBot = require('twitch-bot');
-const pass = 's9cm3xf00umuna6en3xp3c0guhvq09';
+const { username, oauth, hour_rate, msg_rate } = require("./config");
 
-const Bot = new TwitchBot({
-  username: 'loneicybot',
-  oauth: 'oauth:qfyf9bozkc2gi67n9ws98xr63zbexe',
-  channels: ['exc3ssive29']
-})
+let options = {
+  options: {
+    debug: true,
+  },
+  connection: {
+    reconnect: true,
+    secure: true,
+  },
+  identity: {
+    username: username,
+    password: oauth,
+  },
+  channels: [`#${channel}`],
+};
 
-Bot.on('join', channel => {
-  console.log(`Joined channel: ${channel}`)
-})
- 
-Bot.on('error', err => {
-  console.log(err)
-})
+const client = new tmi.client(options);
 
-Bot.on('message', chatter => {
-  points[chatter]
+client.on("connected", (addr, port) => {
+  console.log(`* Connected to ${addr}:${port}`);
+});
 
-  if(chatter.message === '!test') {
-    Bot.say('Command executed! PogChamp')
+client.on("join", (channel, username, self) => {
+  console.log(`${username} has joined`);
+
+  if (!users.includes(username)) {
+    users.push(username);
   }
-})
+});
 
+client.on("part", (channel, username, self) => {
+  console.log(`${username} has left`);
+
+  if (users.includes(username)) {
+    users = users.filter(item => {
+      return item !== username;
+    });
+  }
+});
+
+client.on("message", (target, context, msg, self) => {
+  if (self) {
+    return;
+  } // Ignore messages from the bot
+
+  if (has(points, context.username)) {
+    points[context.username] += msg_rate;
+  } else {
+    points[context.username] = msg_rate;
+  }
+
+  // Remove whitespace from chat message
+  const commandName = msg.trim();
+
+  // If the command is known, let's execute it
+  if (commandName === "!dice") {
+    const num = 3.5;
+    client.say(target, `You rolled a ${num}`);
+    console.log(`* Executed ${commandName} command`);
+  }
+});
+
+setInterval(() => {
+  users.forEach((el, i) => {
+    if (has(points, el)) {
+      points[el] += hour_rate;
+    } else {
+      points[el] = hour_rate;
+    }
+  });
+
+  db.update("points", points).write();
+  console.log("Updated DB after 1 min");
+}, 1000 * 60);
+
+client.connect();
