@@ -7,7 +7,7 @@ let users = [];
 
 const channel = "loneicywolf";
 
-const { username, oauth, hour_rate, msg_rate } = require("./config");
+const { username, oauth, hour_rate, msg_rate } = require("./config/config");
 
 let options = {
   options: {
