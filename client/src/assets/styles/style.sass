@@ -1,7 +1,9 @@
 @import normalize.css
+@import vars
 
 html, body, .App, #root
   height: 100%
+  font-family: $main-font
 .container
   width: 100%
   max-width: 1200px
@@ -24,6 +26,9 @@ html, body, .App, #root
     font-size: 20px
   .audio
     margin-bottom: 35px
+  &.login-component
+    background-color: #fff
+    padding: 20px
 .welcome-title
   color: #fff
   margin: 100px 0
