@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const passport = require("passport");
+const mongoose = require("mongoose");
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
@@ -11,8 +12,8 @@ const validateLoginInput = require("../../validation/login");
 const signToken = require("../../utils/index");
 
 // Load User model
-// const User = require("../../models/User");
-// const Progress = require("../../models/Progress");
+const User = require("../../models/User");
+const Progress = require("../../models/Progress");
 
 // @route POST api/users/register
 // @desc Register user
