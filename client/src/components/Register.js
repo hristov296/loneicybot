@@ -31,7 +31,18 @@ export default function() {
             />
           </div>
           <div>
-            <input type="submit" value="Login" />
+            <label htmlFor="password" className="form-label">
+              Confirm password:
+            </label>
+            <input
+              type="repassword"
+              name="repassword"
+              onChange={handleInputChange}
+              value={inputs.repassword}
+            />
+          </div>
+          <div>
+            <input type="submit" value="Register" />
           </div>
         </form>
       </div>

@@ -3,10 +3,11 @@ import "./assets/styles/style.sass";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Sound from "./components/Sound";
 import Login from "./components/Login";
+import Register from "./components/Register";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
-// const DataContext = React.createContext({});
+const UserContext = React.createContext({});
 
 const sounds = [
   {
@@ -104,15 +105,19 @@ function Main() {
   );
 }
 
-function App() {
-  return (
-    <div className="App">
-      <Router>
-        <Route exact path="/" component={Main} />
-        <Route exact path="/login" component={Login} />
-      </Router>
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <header className="header"></header>
+        <Router>
+          <Route exact path="/" component={Main} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+        </Router>
+      </div>
+    );
+  }
 }
 
 export default App;
