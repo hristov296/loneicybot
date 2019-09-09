@@ -13,7 +13,6 @@ const signToken = require("../../utils/index");
 
 // Load User model
 const User = require("../../models/User");
-const Progress = require("../../models/Progress");
 
 // @route POST api/users/register
 // @desc Register user
@@ -33,18 +32,10 @@ router.post("/register", (req, res) => {
     } 
 
     const newUser = new User({
-      _id: new mongoose.Types.ObjectId(),
       // name: req.body.name,
       email: req.body.email,
       password: req.body.password,
     });
-
-    const newProgress = new Progress({
-      _id: new mongoose.Types.ObjectId(),
-      user_id: newUser._id
-    })
-
-    newUser.last_progress = newProgress._id;
 
     // Hash password before saving in database
     bcrypt.genSalt(10, (err, salt) => {
@@ -53,11 +44,10 @@ router.post("/register", (req, res) => {
 
         newUser.password = hash;
 
-        Promise.all([newUser.save(), newProgress.save()])
+        newUser.save()
           .then(e => {
             const payload = {
               id: newUser._id,
-              last_progress: newUser.last_progress,
               role: 'user',
               email: newUser.email
             }
@@ -101,7 +91,6 @@ router.post("/login", (req, res) => {
         const payload = {
           id: user.id,
           // name: user.name,
-          last_progress: user.last_progress,
           role: user.id === keys.adminID ? 'admin' : 'user',
           email: user.email
         };
@@ -110,10 +99,6 @@ router.post("/login", (req, res) => {
           .then(token => res.json({'token': token.token}))
           .catch(err => console.log(err))
 
-        // Progress.findById(user.last_progress, '-date -user_id -_id')
-        // .then( progress => {
-        //   payload.completed = progress.completed;
-                    
         // })
         // .catch(err => console.log(err));
       } else {
