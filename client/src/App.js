@@ -6,8 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
-
-const UserContext = React.createContext({});
+import { UserStore } from "./state/UserStore";
 
 const sounds = [
   {
@@ -108,14 +107,16 @@ function Main() {
 class App extends React.Component {
   render() {
     return (
-      <div className="App">
-        <header className="header"></header>
-        <Router>
-          <Route exact path="/" component={Main} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-        </Router>
-      </div>
+      <UserStore>
+        <div className="App">
+          <header className="header"></header>
+          <Router>
+            <Route exact path="/" component={Main} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+          </Router>
+        </div>
+      </UserStore>
     );
   }
 }
