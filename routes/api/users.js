@@ -20,20 +20,20 @@ const User = require("../../models/User");
 router.post("/register", (req, res) => {
   // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
-  
+
   // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
-  
-  User.findOne({ email: req.body.email }).then(user => {
+
+  User.findOne({ username: req.body.username }).then(user => {
     if (user) {
-      return res.status(400).json({ email: "Email already exists" });
-    } 
+      return res.status(400).json({ username: "Username already exists" });
+    }
 
     const newUser = new User({
       // name: req.body.name,
-      email: req.body.email,
+      username: req.body.username,
       password: req.body.password,
     });
 
@@ -44,21 +44,23 @@ router.post("/register", (req, res) => {
 
         newUser.password = hash;
 
-        newUser.save()
+        newUser
+          .save()
           .then(e => {
             const payload = {
               id: newUser._id,
-              role: 'user',
-              email: newUser.email
-            }
-            signToken(payload).then(token => res.json(token)).catch(err => console.log(err))
+              role: "user",
+              username: newUser.username,
+            };
+            signToken(payload)
+              .then(token => res.json(token))
+              .catch(err => console.log(err));
           })
-          .catch(err => console.log(err))
+          .catch(err => console.log(err));
       });
     });
-  })
+  });
 });
-
 
 // @route POST api/users/login
 // @desc Login user and return JWT token
@@ -72,14 +74,14 @@ router.post("/login", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const email = req.body.email;
+  const username = req.body.username;
   const password = req.body.password;
 
   // Find user by email
-  User.findOne({ email }).then(user => {
+  User.findOne({ username }).then(user => {
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ email: "Email not found" });
+      return res.status(404).json({ username: "Username not found" });
     }
 
     // Check password
@@ -87,24 +89,21 @@ router.post("/login", (req, res) => {
       if (isMatch) {
         // User matched
         // Create JWT Payload
-        
+
         const payload = {
           id: user.id,
-          // name: user.name,
-          role: user.id === keys.adminID ? 'admin' : 'user',
-          email: user.email
+          role: user.id === keys.adminID ? "admin" : "user",
+          username: user.username,
         };
 
         signToken(payload)
-          .then(token => res.json({'token': token.token}))
-          .catch(err => console.log(err))
+          .then(token => res.json({ token: token.token }))
+          .catch(err => console.log(err));
 
         // })
         // .catch(err => console.log(err));
       } else {
-        return res
-          .status(400)
-          .json({ password: "Password incorrect" });
+        return res.status(400).json({ password: "Password incorrect" });
       }
     });
   });
@@ -113,16 +112,11 @@ router.post("/login", (req, res) => {
 // @route GET api/users/currentuser
 // @desc Return current user
 // @access Private
-router.get(
-  "/currentuser",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    res.json({
-      id: req.user.id,
-      name: req.user.name,
-      email: req.user.email
-    });
-  }
-);
+router.get("/currentuser", passport.authenticate("jwt", { session: false }), (req, res) => {
+  res.json({
+    id: req.user.id,
+    username: req.user.username,
+  });
+});
 
 module.exports = router;

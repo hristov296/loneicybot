@@ -4,7 +4,6 @@ import jwt_decode from "jwt-decode";
 
 // Register User
 export const registerUser = userData => dispatch => {
-  console.log("asd dsa");
   axios
     .post("/api/users/register", userData)
     .then(res => {
@@ -18,6 +17,7 @@ export const registerUser = userData => dispatch => {
       const decoded = jwt_decode(token);
       // Set current user
       dispatch(setCurrentUser(decoded));
+      window.location.href = "./";
     }) // re-direct to login on successful register
     .catch(err => {
       console.log(err);
@@ -44,14 +44,21 @@ export const loginUser = userData => dispatch => {
       const decoded = jwt_decode(token);
       // Set current user
       dispatch(setCurrentUser(decoded));
+      window.location.href = "./";
     })
     .catch(err => {
-      console.log(err);
       dispatch({
         type: "authError",
         payload: err.response.data,
       });
     });
+};
+
+export const logoutUser = () => dispatch => {
+  localStorage.clear();
+  setAuthToken(false);
+  dispatch({ type: "logoutUser" });
+  window.location.href = "./";
 };
 
 // Set logged in user

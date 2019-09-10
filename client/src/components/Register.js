@@ -23,7 +23,7 @@ export default function() {
                 noValidate
                 onSubmit={e => {
                   e.preventDefault();
-                  user.handleSetUser(inputs);
+                  user.handleRegisterUser(inputs);
                 }}>
                 <div>
                   <label htmlFor="username" className="form-label">

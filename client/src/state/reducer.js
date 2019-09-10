@@ -3,8 +3,18 @@ const reducer = (state, action) => {
     case "setCurrentUser":
       return {
         ...state,
-        isAuthenticated: action.payload,
+        isAuthenticated: Boolean(action.payload),
         user: action.payload,
+      };
+    case "authError":
+      return {
+        ...state,
+        errors: action.payload,
+      };
+    case "logoutUser":
+      return {
+        ...state,
+        isAuthenticated: false,
       };
     default:
       return state;
