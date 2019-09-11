@@ -44,7 +44,7 @@ export const loginUser = userData => dispatch => {
       const decoded = jwt_decode(token);
       // Set current user
       dispatch(setCurrentUser(decoded));
-      window.location.href = "./";
+      // window.location.href = "./";
     })
     .catch(err => {
       dispatch({
@@ -58,7 +58,7 @@ export const logoutUser = () => dispatch => {
   localStorage.clear();
   setAuthToken(false);
   dispatch({ type: "logoutUser" });
-  window.location.href = "./";
+  // window.location.href = "./";
 };
 
 // Set logged in user

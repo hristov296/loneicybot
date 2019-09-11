@@ -1,18 +1,18 @@
 import React from "react";
 import "./assets/styles/style.sass";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Header from "./components/Header";
 import Main from "./components/Main";
 
-import UserContext, { UserStore } from "./state/UserStore";
+import { UserStore } from "./state/UserStore";
 
 class App extends React.Component {
   render() {
     return (
-      <UserStore>
+      <UserStore authCheck={this.props.authCheck}>
         <div className="App">
           <Router>
             <Header />
