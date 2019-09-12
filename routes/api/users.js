@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
 const passport = require("passport");
-const mongoose = require("mongoose");
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
@@ -92,7 +89,6 @@ router.post("/login", (req, res) => {
 
         const payload = {
           id: user.id,
-          role: user.id === keys.adminID ? "admin" : "user",
           username: user.username,
         };
 

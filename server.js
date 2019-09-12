@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
@@ -7,6 +7,7 @@ const passport = require("passport");
 const path = require("path");
 
 const users = require("./routes/api/users");
+const bot = require("./routes/api/bot");
 
 const app = express();
 
@@ -31,6 +32,7 @@ mongoose
 app.use(passport.initialize());
 require("./config/passport")(passport);
 app.use("/api/users", users);
+app.use("/api/bot", bot);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "/client/build/index.html"));
