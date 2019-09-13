@@ -19,6 +19,15 @@ class App extends React.Component {
             <Route exact path="/" component={Main} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
+            <Route
+              exact
+              path="/tw-login"
+              render={() => {
+                console.log(process.env.REACT_APP_TEST);
+                window.location.href = "https://abv.bg/";
+                return null;
+              }}
+            />
           </Router>
         </div>
       </UserStore>

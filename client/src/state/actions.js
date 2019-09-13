@@ -68,3 +68,14 @@ export const setCurrentUser = decoded => {
     payload: decoded,
   };
 };
+
+export const loginWithTwitch = () => {
+  axios
+    .post("/tw-login")
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};

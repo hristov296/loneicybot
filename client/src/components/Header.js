@@ -2,6 +2,8 @@ import React from "react";
 import UserContext from "../state/UserStore";
 import { Link } from "react-router-dom";
 
+import TwitchLogin from "./functional/TwitchLogin";
+
 export default function() {
   return (
     <UserContext.Consumer>
@@ -21,9 +23,16 @@ export default function() {
                 </button>
               </p>
             ) : (
-              <p>
-                <Link to="/login">Login</Link> or <Link to="/register">Register</Link>
-              </p>
+              <>
+                <div className="login-actions">
+                  <p>
+                    <Link to="/login">Login</Link> or <Link to="/register">Register</Link>
+                  </p>
+                </div>
+                <div className="login-tw-button">
+                  <TwitchLogin />
+                </div>
+              </>
             )}
           </div>
         </header>
