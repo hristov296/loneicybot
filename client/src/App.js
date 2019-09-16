@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Header from "./components/Header";
 import Main from "./components/Main";
+import TwLogin from "./components/functional/TwLogin";
 
 import { UserStore } from "./state/UserStore";
 
@@ -23,8 +24,9 @@ class App extends React.Component {
               exact
               path="/tw-login"
               render={() => {
-                console.log(process.env.REACT_APP_TEST);
-                window.location.href = "https://abv.bg/";
+                process.env.NODE_ENV === "development"
+                  ? (window.location.href = "http://localhost:5000/tw-login")
+                  : (window.location.href = "http://irithyll.com/tw-login");
                 return null;
               }}
             />

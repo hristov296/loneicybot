@@ -1,8 +1,7 @@
 import React from "react";
 import UserContext from "../state/UserStore";
 import { Link } from "react-router-dom";
-
-import TwitchLogin from "./functional/TwitchLogin";
+import { ReactComponent as Twlogo } from "../assets/svg/tw-logo.svg";
 
 export default function() {
   return (
@@ -30,7 +29,10 @@ export default function() {
                   </p>
                 </div>
                 <div className="login-tw-button">
-                  <TwitchLogin />
+                  <Link to="/tw-login" className="button-link">
+                    <Twlogo className="icon" />
+                    <span>Login with Twitch</span>
+                  </Link>
                 </div>
               </>
             )}
