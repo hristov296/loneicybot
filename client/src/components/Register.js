@@ -35,6 +35,7 @@ export default function() {
                     onChange={handleInputChange}
                     value={inputs.username}
                   />
+                  <span className="input-errors">{user.errors.username}</span>
                 </div>
                 <div>
                   <label htmlFor="password" className="form-label">
@@ -46,6 +47,7 @@ export default function() {
                     onChange={handleInputChange}
                     value={inputs.password}
                   />
+                  <span className="input-errors">{user.errors.password}</span>
                 </div>
                 <div>
                   <label htmlFor="password" className="form-label">
@@ -57,6 +59,7 @@ export default function() {
                     onChange={handleInputChange}
                     value={inputs.repassword}
                   />
+                  <span className="input-errors">{user.errors.repassword}</span>
                 </div>
                 <div>
                   <input type="submit" value="Register" />

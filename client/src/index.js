@@ -10,6 +10,8 @@ let init = {
   user: "",
 };
 
+const currentTime = Date.now() / 1000;
+
 if (localStorage.jwtToken) {
   // Set auth token header auth
   const token = localStorage.jwtToken;
@@ -17,7 +19,6 @@ if (localStorage.jwtToken) {
   // Decode token and get user info and exp
   const decoded = jwt_decode(token);
 
-  const currentTime = Date.now() / 1000;
   if (decoded.exp > currentTime) {
     // Set user and isAuthenticated
     init = {

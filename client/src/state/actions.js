@@ -69,17 +69,12 @@ export const setCurrentUser = decoded => {
   };
 };
 
-export const loginWithTwitch = () => {
-  const twLoginLink =
-    "https://id.twitch.tv/oauth2/authorize?client_id=s9cm3xf00umuna6en3xp3c0guhvq09&redirect_uri=http%3A%2F%2Firithyll.com%2Ftwitch-oauth&response_type=token+id_token&scope=viewing_activity_read+openid";
+export const updateUserProfile = user => {
+  axios.post("/api/users/updateuserprofile", user).then(res => {
+    const { token } = res.data;
+    console.log(res.data);
 
-  window.location.href = twLoginLink;
-  axios
-    .post("/tw-login")
-    .then(res => {
-      console.log(res);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+    localStorage.setItem("jwtToken", token);
+    window.location.href = "./";
+  });
 };

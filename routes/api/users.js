@@ -48,6 +48,7 @@ router.post("/register", (req, res) => {
               id: newUser._id,
               role: "user",
               username: newUser.username,
+              twid: null,
             };
             signToken(payload)
               .then(token => res.json(token))
@@ -113,6 +114,29 @@ router.get("/currentuser", passport.authenticate("jwt", { session: false }), (re
     id: req.user.id,
     username: req.user.username,
   });
+});
+
+router.post("/updateuserprofile", (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.body.id },
+    { twid: req.body.twid, displayName: req.body.displayName, email: req.body.email },
+    { runValidators: true, setDefaultsOnInsert: true }
+  )
+    .then(doc => {
+      console.log(doc);
+      const payload = {
+        id: doc._id,
+        username: doc.username,
+        displayName: doc.displayName,
+        twid: doc.twid,
+      };
+      signToken(payload)
+        .then(token => res.json(token))
+        .catch(err => console.log(err));
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
 });
 
 module.exports = router;
