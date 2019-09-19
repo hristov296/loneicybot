@@ -12,6 +12,9 @@ const UserSchema = new Schema({
   displayName: {
     type: String,
   },
+  picture: {
+    type: String
+  },
   email: {
     type: String,
   },
