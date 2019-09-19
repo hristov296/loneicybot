@@ -78,3 +78,18 @@ export const updateUserProfile = user => {
     window.location.href = "./";
   });
 };
+
+export const handleLogin = (user, hashes) => {
+  axios
+    .post("/api/twitch/handlelogin", { user: user, hashes: hashes })
+    .then(res => {
+      const { token } = res.data;
+      console.log(res.data);
+
+      localStorage.setItem("jwtToken", token);
+      window.location.href = "./";
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};

@@ -25,7 +25,7 @@ class App extends React.Component {
               exact
               path="/tw-login"
               render={() => {
-                window.location.href = "http://localhost:5000/api/twitch/tw-login";
+                window.location.href = "http://localhost:5000/api/twitch/login";
                 return null;
                 const nonce = encodeURIComponent(randomBytes(16).toString("base64"));
                 localStorage.setItem("currentNonce", nonce);
