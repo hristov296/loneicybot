@@ -12,7 +12,7 @@ export default props => {
   }, {});
 
   if (hashes.hasOwnProperty("id_token") && hashes.hasOwnProperty("access_token")) {
-    handleLogin(init, hashes);
+    handleLogin({ init, hashes });
   }
 
   return null;

@@ -79,9 +79,9 @@ export const updateUserProfile = user => {
   });
 };
 
-export const handleLogin = (user, hashes) => {
+export const handleLogin = userData => {
   axios
-    .post("/api/twitch/handlelogin", { user: user, hashes: hashes })
+    .post("/api/twitch/handlelogin", userData)
     .then(res => {
       const { token } = res.data;
       console.log(res.data);
