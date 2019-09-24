@@ -4,6 +4,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         isAuthenticated: Boolean(action.payload),
+        hashes: "",
         user: action.payload,
       };
     case "authError":
@@ -15,7 +16,8 @@ const reducer = (state, action) => {
       return {
         ...state,
         isAuthenticated: false,
-        user: {},
+        hashes: "",
+        user: "",
       };
     default:
       return state;

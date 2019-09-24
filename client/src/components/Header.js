@@ -2,6 +2,7 @@ import React from "react";
 import UserContext from "../state/UserStore";
 import { Link } from "react-router-dom";
 import { ReactComponent as Twlogo } from "../assets/svg/tw-logo.svg";
+import { ReactComponent as Preloader } from "../assets/svg/preloader.svg";
 
 export default function() {
   return (
@@ -9,17 +10,18 @@ export default function() {
       {user => (
         <header className="header">
           <div className="container">
-            {user.isAuthenticated ? (
+            {user.loadingLoginCreds ? (
+              <Preloader />
+            ) : user.isAuthenticated ? (
               user.user.displayName && user.user.picture ? (
                 <p>
-                  <img src={user.user.picture} width="50" height="50" />
+                  <img src={user.user.picture} width="50" height="50" alt="profile-pic" />
                   <span>{user.user.displayName}</span>
                   <button
                     onClick={e => {
                       e.preventDefault();
                       user.handleLogoutUser();
-                    }}
-                  >
+                    }}>
                     Logout
                   </button>
                 </p>
@@ -31,25 +33,24 @@ export default function() {
                     onClick={e => {
                       e.preventDefault();
                       user.handleLogoutUser();
-                    }}
-                  >
+                    }}>
                     Logout
                   </button>
                 </p>
               )
             ) : (
               <>
-                <div className="login-actions">
+                {/* <div className="login-actions">
                   <p>
-                    <Link to="/login">Login</Link> or{" "}
-                    <Link to="/register">Register</Link>
+                    <Link to="/login">Login</Link> or <Link to="/register">Register</Link>
                   </p>
-                </div>
+                </div> */}
                 <div className="login-tw-button">
                   <Link to="/tw-login" className="button-link">
                     <Twlogo className="icon" />
                     <span>Login with Twitch</span>
                   </Link>
+                  <span className="input-errors">{user.errors.twlogin}</span>
                 </div>
               </>
             )}

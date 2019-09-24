@@ -8,7 +8,7 @@ const signToken = require("../../utils/index");
 const Nonce = require("../../models/Nonce");
 const User = require("../../models/User");
 
-const redirect_uri = "http://localhost:3000/tw-oauth";
+const redirect_uri = "http://localhost:3000/";
 const uri_encoded = encodeURIComponent(redirect_uri);
 
 router.get("/login", (req, res) => {
@@ -71,7 +71,7 @@ router.get("/oauth", (req, res) => {
 router.post("/handlelogin", (req, res) => {
   // console.log(req.body);
   if (!req.body.hashes) {
-    return res.status(400).send("Invalid tokens");
+    return res.status(400).json({ twlogin: "Invalid tokens" });
   }
 
   const id_token = jwt_decode(req.body.hashes.id_token);
@@ -82,14 +82,14 @@ router.post("/handlelogin", (req, res) => {
   Nonce.findOneAndDelete({ nonce: id_token.nonce })
     .then(nonce => {
       if (!nonce) {
-        return res.status(400).send("Invalid or expired nonce!");
+        throw new Error("Invalid or expired nonce!");
       }
 
       if (id_token.iss !== "https://id.twitch.tv/oauth2" || id_token.aud !== process.env.TW_CLIENTID) {
-        return res.status(400).send("Invalid token audience or issuer");
+        throw new Error("Invalid token audience or issuer");
       }
       if (currentTime > id_token.exp) {
-        return res.status(400).send("Expired token!");
+        throw new Error("Expired token!");
       }
     })
     .then(() => {
@@ -138,7 +138,7 @@ router.post("/handlelogin", (req, res) => {
               .catch(err => console.log(err));
           })
           .catch(err => {
-            return res.status(400).json(err);
+            throw new Error(err);
           });
       } else {
         User.findOne({ twid: id_token.sub })
@@ -174,14 +174,18 @@ router.post("/handlelogin", (req, res) => {
                     .then(token => res.json(token))
                     .catch(err => console.log(err));
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                  throw new Error(err);
+                });
             }
           })
-          .catch(err => console.log(err));
+          .catch(err => {
+            throw new Error(err);
+          });
       }
     })
     .catch(err => {
-      throw err;
+      return res.status(400).json({ twlogin: err.message });
     });
 
   // return res.sendStatus(200);

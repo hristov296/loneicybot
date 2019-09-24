@@ -9,6 +9,7 @@ let init = {
   isAuthenticated: false,
   user: "",
 };
+let hashesIn = "";
 
 const currentTime = Date.now() / 1000;
 
@@ -28,4 +29,17 @@ if (localStorage.jwtToken) {
   }
 }
 
-ReactDOM.render(<App authCheck={init} />, document.getElementById("root"));
+const hash = window.location.hash.substr(1);
+const hashes = hash.split("&").reduce(function(result, item) {
+  var parts = item.split("=");
+  result[parts[0]] = parts[1];
+  return result;
+}, {});
+
+if (hashes.hasOwnProperty("id_token") && hashes.hasOwnProperty("access_token")) {
+  // handleLogin({ init, hashes });
+  hashesIn = hashes;
+  window.history.pushState("", document.title, window.location.pathname);
+}
+
+ReactDOM.render(<App authCheck={init} hashesIn={hashesIn} />, document.getElementById("root"));

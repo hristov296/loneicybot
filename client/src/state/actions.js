@@ -69,17 +69,18 @@ export const setCurrentUser = decoded => {
   };
 };
 
-export const updateUserProfile = user => {
-  axios.post("/api/users/updateuserprofile", user).then(res => {
-    const { token } = res.data;
-    console.log(res.data);
+// export const updateUserProfile = user => {
+//   axios.post("/api/users/updateuserprofile", user).then(res => {
+//     const { token } = res.data;
+//     console.log(res.data);
 
-    localStorage.setItem("jwtToken", token);
-    window.location.href = "./";
-  });
-};
+//     localStorage.setItem("jwtToken", token);
+//     dispatch(setCurrentUser());
+//     window.location.href = "./";
+//   });
+// };
 
-export const handleLogin = userData => {
+export const handleLogin = userData => dispatch => {
   axios
     .post("/api/twitch/handlelogin", userData)
     .then(res => {
@@ -87,9 +88,19 @@ export const handleLogin = userData => {
       console.log(res.data);
 
       localStorage.setItem("jwtToken", token);
-      window.location.href = "./";
+
+      // Set token to Auth header
+      setAuthToken(token);
+      // Decode token to get user data
+      const decoded = jwt_decode(token);
+      // Set current user
+      dispatch(setCurrentUser(decoded));
+      // window.location.href = "./";
     })
     .catch(err => {
-      console.log(err);
+      dispatch({
+        type: "authError",
+        payload: err.response.data,
+      });
     });
 };
