@@ -1,75 +1,76 @@
 const tmi = require("tmi.js");
 const has = require("has");
-// const db = require("./db.js");
+
+const Channel = require("./models/Channel");
+const Chatter = require("./models/Chatter");
 
 // let points = db.get("points").value();
 // let users = [];
 
-const Channel = require("./models/Channel");
+const { TW_USERNAME, TW_OAUTH } = process.env;
 const channels = Channel.find();
+
+let options = {
+  options: {
+    debug: true,
+  },
+  connection: {
+    reconnect: true,
+    secure: true,
+  },
+  identity: {
+    username: TW_USERNAME,
+    password: TW_OAUTH,
+  },
+  channels: channels.map(el => `#${el.name}`),
+};
+const client = new tmi.client(options);
+
 console.log(channels);
-// const { username, oauth, hour_rate, msg_rate } = require("./config/config");
 
-// let options = {
-//   options: {
-//     debug: true,
-//   },
-//   connection: {
-//     reconnect: true,
-//     secure: true,
-//   },
-//   identity: {
-//     username: username,
-//     password: oauth,
-//   },
-//   channels: [`#${channel}`],
-// };
+client.on("connected", (addr, port) => {
+  console.log(`* Connected to ${addr}:${port}`);
+});
 
-// const client = new tmi.client(options);
+client.on("join", (channel, username, self) => {
+  console.log(`${username} has joined`);
 
-// client.on("connected", (addr, port) => {
-//   console.log(`* Connected to ${addr}:${port}`);
-// });
+  if (!users.includes(username)) {
+    users.push(username);
+  }
+});
 
-// client.on("join", (channel, username, self) => {
-//   console.log(`${username} has joined`);
+client.on("part", (channel, username, self) => {
+  console.log(`${username} has left`);
 
-//   if (!users.includes(username)) {
-//     users.push(username);
-//   }
-// });
+  if (users.includes(username)) {
+    users = users.filter(item => {
+      return item !== username;
+    });
+  }
+});
 
-// client.on("part", (channel, username, self) => {
-//   console.log(`${username} has left`);
+client.on("message", (target, context, msg, self) => {
+  if (self) {
+    return;
+  } // Ignore messages from the bot
 
-//   if (users.includes(username)) {
-//     users = users.filter(item => {
-//       return item !== username;
-//     });
-//   }
-// });
+  if (has(points, context.username)) {
+    points[context.username] += msg_rate;
+  } else {
+    points[context.username] = msg_rate;
+  }
 
-// client.on("message", (target, context, msg, self) => {
-//   if (self) {
-//     return;
-//   } // Ignore messages from the bot
+  // Remove whitespace from chat message
+  const commandName = msg.trim();
 
-//   if (has(points, context.username)) {
-//     points[context.username] += msg_rate;
-//   } else {
-//     points[context.username] = msg_rate;
-//   }
-
-//   // Remove whitespace from chat message
-//   const commandName = msg.trim();
-
-//   // If the command is known, let's execute it
-//   if (commandName === "!dice") {
-//     const num = 3.5;
-//     client.say(target, `You rolled a ${num}`);
-//     console.log(`* Executed ${commandName} command`);
-//   }
-// });
+  // If the command is known, let's execute it
+  if (commandName === "!dice") {
+    const num = 3.5;
+    client.say(target, `You rolled a ${num}`);
+    console.log(`* Executed ${commandName} command`);
+  }
+});
 
 // setInterval(() => {
 //   users.forEach((el, i) => {
@@ -84,4 +85,17 @@ console.log(channels);
 //   console.log("Updated DB after 1 min");
 // }, 1000 * 60);
 
-// client.connect();
+const startBot = () => {
+  client.connect();
+};
+const stopBot = () => {
+  client.disconnect();
+};
+const joinChannel = channel => {
+  client.join(channel);
+};
+const partChannel = channel => {
+  client.part(channel);
+};
+
+module.exports = { startBot, stopBot, joinChannel, partChannel };
