@@ -8,6 +8,10 @@ const ChannelSchema = new Schema({
     type: String,
     required: true,
   },
+  channel_id: {
+    type: Number,
+    required: true,
+  },
   msg_rate: {
     type: Number,
     default: 10,
@@ -18,7 +22,6 @@ const ChannelSchema = new Schema({
   },
   user_id: {
     type: ObjectId,
-    required: true,
     ref: "User",
   },
 });

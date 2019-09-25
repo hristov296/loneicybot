@@ -15,4 +15,17 @@ router.post("/startbot", (req, res) => {
     });
 });
 
+router.post("/stopbot", (req, res) => {
+  bot
+    .stopBot()
+    .then(nice => {
+      console.log(nice);
+      res.send(nice);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).send(err);
+    });
+});
+
 module.exports = router;

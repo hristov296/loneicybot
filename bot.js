@@ -8,7 +8,10 @@ const Chatter = require("./models/Chatter");
 // let users = [];
 
 const { TW_USERNAME, TW_OAUTH } = process.env;
-const channels = Channel.find();
+const channels = Channel.find({}, (err, docs) => {
+  if (err) throw err;
+  // console.log(docs);
+});
 
 let options = {
   options: {
@@ -24,9 +27,8 @@ let options = {
   },
   channels: channels.map(el => `#${el.name}`),
 };
-const client = new tmi.client(options);
-
-console.log(channels);
+const client = new tmi.client();
+// const client = new tmi.client(options);
 
 client.on("connected", (addr, port) => {
   console.log(`* Connected to ${addr}:${port}`);

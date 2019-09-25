@@ -2,6 +2,7 @@ import React from "react";
 import "./assets/styles/style.sass";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import Dashboard from "./components/admin/Dashboard";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Header from "./components/Header";
@@ -18,6 +19,7 @@ class App extends React.Component {
           <Router>
             <Header />
             <Route exact path="/" component={Main} />
+            <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
             <Route
